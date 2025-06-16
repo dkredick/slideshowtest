@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Catch the Star</title>
+  <style>
+    body { margin: 0; background: #000; color: white; font-family: sans-serif; text-align: center; }
+    #game {
+      position: relative;
+      width: 400px;
+      height: 600px;
+      margin: 20px auto;
+      background: linear-gradient(#001, #003);
+      overflow: hidden;
+      border: 3px solid white;
+    }
+    #player {
+      position: absolute;
+      bottom: 10px;
+      left: 170px;
+      width: 60px;
+      height: 20px;
+      background: gold;
+      border-radius: 10px;
+    }
+    .star {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background: yellow;
+      border-radius: 50%;
+      top: 0;
+    }
+    #score {
+      font-size: 20px;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+<h1>🌟 Catch the Star 🌟</h1>
+<div id="score">Score: 0</div>
+<div id="game">
+  <div id="player"></div>
+</div>
+
+<script>
+  const game = document.getElementById("game");
+  const player = document.getElementById("player");
+  const scoreEl = document.getElementById("score");
+  let score = 0;
+  let playerX = 170;
+
+  document.addEventListener("keydown", e => {
+    if (e.key === "ArrowLeft") playerX -= 20;
+    if (e.key === "ArrowRight") playerX += 20;
+    playerX = Math.max(0, Math.min(340, playerX));
+    player.style.left = playerX + "px";
+  });
+
+  function createStar() {
+    const star = document.createElement("div");
+    star.classList.add("star");
+    star.style.left = Math.floor(Math.random() * 380) + "px";
+    game.appendChild(star);
+    let starY = 0;
+
+    const fall = setInterval(() => {
+      starY += 4;
+      star.style.top = starY + "px";
+
+      // collision check
+      const starX = parseInt(star.style.left);
+      if (starY > 570 && starX >= playerX - 20 && starX <= playerX + 60) {
+        score++;
+        scoreEl.textContent = "Score: " + score;
+        game.removeChild(star);
+        clearInterval(fall);
+      }
+
+      if (starY > 600) {
+        game.removeChild(star);
+        clearInterval(fall);
+      }
+    }, 20);
+  }
+
+  setInterval(createStar, 1000);
+</script>
+
+</body>
+</html>
